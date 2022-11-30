@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "balocco"
+version = "0.1.0"
+description = ""
+authors = ["Nemesis <lorenzo.balugani@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+SQLAlchemy = "^1.4.44"
+psycopg2-binary = "^2.9.5"
+fastapi = "^0.88.0"
+uvicorn = "^0.20.0"
+python-dotenv = "^0.21.0"
+lazy-object-proxy = "^1.8.0"
+fastapi-auth0 = "^0.3.2"
+fastapi-pagination = "^0.11.0"
+alembic = "^1.8.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
