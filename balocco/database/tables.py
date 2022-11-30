@@ -41,7 +41,7 @@ class Giveaway(Base):
     assignment_date = Column(DateTime, nullable=False)
     active = Column(Boolean, nullable=False, default=True)
 
-    issuer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))
+    issuer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     issuer = relationship("User", back_populates="issued")
     items = relationship("Item", back_populates="giveaway")
     signups = relationship("Signup", back_populates="giveaway")
@@ -63,10 +63,11 @@ class Item(Base):
     name = Column(String, nullable=False)
     data = Column(JSON)
     obtainable = Column(Boolean, nullable=False, default=True)
+    obtain_action = Column(String, nullable=False)
 
     winner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))
     winner = relationship("User", back_populates="wins")
-    giveaway_id = Column(UUID(as_uuid=True), ForeignKey("giveaway.id"))
+    giveaway_id = Column(UUID(as_uuid=True), ForeignKey("giveaway.id"), nullable=False)
     giveaway = relationship("Giveaway", back_populates="items")
 
 

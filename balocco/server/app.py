@@ -8,6 +8,7 @@ from balocco.server.handlers import handle_api_error, handle_sqlalchemy_not_foun
 from balocco.server.routes.api.users.v1.router import router as router_api_user_v1
 from balocco.server.routes.api.server.v1.router import router as router_api_server_v1
 from balocco.server.routes.api.giveaway.v1.router import router as router_api_giveaway_v1
+from balocco.server.routes.api.item.v1.router import router as router_api_item_v1
 from fastapi_pagination import add_pagination
 
 with open(pathlib.Path(__file__).parent.joinpath("description.md")) as file:
@@ -23,6 +24,7 @@ app = fastapi.FastAPI(
 app.include_router(router_api_user_v1)
 app.include_router(router_api_server_v1)
 app.include_router(router_api_giveaway_v1)
+app.include_router(router_api_item_v1)
 
 app.add_exception_handler(ApiException, handle_api_error)
 app.add_exception_handler(sqlalchemy.exc.NoResultFound, handle_sqlalchemy_not_found)

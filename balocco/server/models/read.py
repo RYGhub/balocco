@@ -1,3 +1,4 @@
+import typing
 from uuid import UUID
 from balocco.server.models import edit
 from balocco.server.models import base
@@ -48,7 +49,7 @@ class GiveawayRead(edit.GiveawayEdit):
 
 class ItemRead(edit.ItemEdit):
     id: UUID
-    data: dict
+    data: typing.Optional[dict]
     obtainable: bool
-    winner_id: UUID
+    winner_id: typing.Optional[UUID]
     giveaway_id: UUID

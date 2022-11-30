@@ -54,3 +54,4 @@ class ItemEdit(base.ApiORMModel):
     """
     name: str
     giveaway_id: UUID
+    obtain_action: str

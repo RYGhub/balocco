@@ -1,4 +1,6 @@
 import json
+from uuid import UUID
+
 import fastapi
 from fastapi import Security
 from fastapi_auth0 import Auth0User
@@ -10,7 +12,7 @@ from balocco.server.authentication import auth
 
 __all__ = (
     "dep_user",
-    "dep_admin"
+    "dep_admin",
 )
 
 
