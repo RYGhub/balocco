@@ -30,5 +30,5 @@ async def edit_self(new_server: models.edit.ServerEdit, current_user: tables.Use
 @router.get("/planetarium", response_model=models.full.Planetarium)
 async def read_self(server=fastapi.Depends(deps.dep_server)):
     return models.full.Planetarium(type="Balocco",
-                                   version=pkg_resources.get_distribution("open_dictionary").version,
+                                   version="0.1",
                                    oauth_public=os.environ["OAUTH_PUBLIC"], server=server)

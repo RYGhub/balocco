@@ -4,7 +4,9 @@ from balocco.server.models import base
 
 __all__ = (
     "UserRead",
-    "ServerRead"
+    "ServerRead",
+    "GiveawayRead",
+    "ItemRead"
 )
 
 
@@ -32,3 +34,21 @@ class ServerRead(edit.ServerEdit):
     """
 
     id: UUID
+
+
+class GiveawayRead(edit.GiveawayEdit):
+    """
+    **Read** model for :class:`.database.tables.Giveaway`.
+    """
+
+    id: UUID
+    issuer_id: UUID
+    active: bool
+
+
+class ItemRead(edit.ItemEdit):
+    id: UUID
+    data: dict
+    obtainable: bool
+    winner_id: UUID
+    giveaway_id: UUID

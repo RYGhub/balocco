@@ -1,10 +1,13 @@
 import typing as t
 from uuid import UUID
 from balocco.server.models import base
+from datetime import datetime
 
 __all__ = (
     "UserEdit",
-    "ServerEdit"
+    "ServerEdit",
+    "GiveawayEdit",
+    "ItemEdit"
 )
 
 
@@ -32,3 +35,22 @@ class ServerEdit(base.ApiORMModel):
     motd: str
     logo_uri: t.Optional[str]
     custom_colors: t.Optional[str]
+
+
+class GiveawayEdit(base.ApiORMModel):
+    """
+    **Edit** model for :class:`.database.tables.Giveaway`.
+    """
+
+    name: str
+    description: str
+    closing_date: datetime
+    assignment_date: datetime
+
+
+class ItemEdit(base.ApiORMModel):
+    """
+    **Edit** model for :class:`.database.tables.Item`.
+    """
+    name: str
+    giveaway_id: UUID

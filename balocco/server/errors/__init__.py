@@ -10,6 +10,7 @@ __all__ = (
     "WrongAuthHeader",
     "ResourceNotFound",
     "MultipleResultsFound",
+    "CompulsiveJoin"
 )
 
 
@@ -65,4 +66,10 @@ class MultipleResultsFound(ApiException):
     STATUS_CODE = 500
     ERROR_CODE = "MULTIPLE_FOUND"
     REASON = "Multiple resources were found with the requested identifier. This is probably a problem in the application database. If you are the system admininistrator, ensure you have run all the available migrations through Alembic."
+
+
+class CompulsiveJoin(ApiException):
+    STATUS_CODE = 500
+    ERROR_CODE = "MULTIPLE_JOIN"
+    REASON = "You are trying to join a Giveaway you're already partecipating in."
 
