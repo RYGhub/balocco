@@ -25,6 +25,9 @@ class Planetarium(base.ApiModel):
     version: str
     type: str
     oauth_public: str
+    audience: str
+    domain: str
+
     server: ServerFull
 
 
@@ -44,6 +47,7 @@ class ItemFull(read.ItemRead):
 
     winner: typing.Optional[read.UserRead]
     giveaway: typing.Optional[read.GiveawayRead]
+    obtain_action: str
 
 
 class GiveawayFull(read.GiveawayRead):
@@ -53,7 +57,7 @@ class GiveawayFull(read.GiveawayRead):
 
     issuer: typing.Optional[read.UserRead]
     signups: typing.List[Signup]
-    items: typing.List[ItemFull]
+    items: typing.List[read.ItemRead]
 
 
 class UserFull(read.UserRead):

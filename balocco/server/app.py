@@ -2,6 +2,8 @@ import pathlib
 import fastapi
 import pkg_resources
 import sqlalchemy.exc
+from starlette.middleware.cors import CORSMiddleware
+
 from balocco.server.errors import ApiException
 from balocco.server.handlers import handle_api_error, handle_sqlalchemy_not_found, \
     handle_sqlalchemy_multiple_results, handle_generic_error
@@ -19,6 +21,16 @@ app = fastapi.FastAPI(
     title="Balocco",
     description=description,
     version="0.1",
+)
+
+origins = ["http://127.0.0.1:3000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(router_api_user_v1)

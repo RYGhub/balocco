@@ -31,4 +31,5 @@ async def edit_self(new_server: models.edit.ServerEdit, current_user: tables.Use
 async def read_self(server=fastapi.Depends(deps.dep_server)):
     return models.full.Planetarium(type="Balocco",
                                    version="0.1",
-                                   oauth_public=os.environ["OAUTH_PUBLIC"], server=server)
+                                   oauth_public=os.environ["OAUTH_PUBLIC"], domain=os.environ["DOMAIN"],
+                                   audience=os.environ["API_AUDIENCE"], server=server)

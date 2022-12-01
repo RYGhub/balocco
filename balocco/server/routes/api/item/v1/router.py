@@ -46,3 +46,13 @@ async def edit_item(item_new: models.edit.ItemEdit,
         return crud.quick_update(session, item, item_new)
     except sqlalchemy.exc.IntegrityError:
         raise ResourceNotFound
+
+
+@router.patch("/take/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
+async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
+                    item: tables.Item = fastapi.Depends(deps.dep_item),
+                    session: Session = fastapi.Depends(deps.dep_session)
+                    ):
+    item.taken = True
+    session.commit()
+    return item

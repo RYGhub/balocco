@@ -64,6 +64,7 @@ class Item(Base):
     data = Column(JSON)
     obtainable = Column(Boolean, nullable=False, default=True)
     obtain_action = Column(String, nullable=False)
+    taken = Column(Boolean, nullable=False, default=False)
 
     winner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))
     winner = relationship("User", back_populates="wins")
