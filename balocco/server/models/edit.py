@@ -1,5 +1,8 @@
 import typing as t
 from uuid import UUID
+
+from pydantic import typing
+
 from balocco.server.models import base
 from datetime import datetime
 
@@ -54,3 +57,9 @@ class ItemEdit(base.ApiORMModel):
     """
     name: str
     giveaway_id: UUID
+    data: typing.Optional[dict]
+    obtain_action: str
+
+
+class SteamData(base.ApiModel):
+    data: typing.Optional[dict]

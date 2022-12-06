@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import sqlalchemy.exc
 from pydantic import typing
@@ -12,6 +13,7 @@ from balocco.database.engine import Session
 from balocco.database import tables
 from balocco.server.authentication import auth
 from balocco.server.errors import *
+import requests
 
 router = fastapi.routing.APIRouter(
     prefix="/api/item/v1",
@@ -33,7 +35,7 @@ async def create_item(item: models.edit.ItemEdit,
                       ):
     # Add data retrieval from steam to populate the data json column.
     return crud.quick_create(session, tables.Item(name=item.name, giveaway_id=item.giveaway_id,
-                                                  obtain_action=item.obtain_action))
+                                                  obtain_action=item.obtain_action, data=item.data))
 
 
 @router.patch("/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
@@ -56,3 +58,12 @@ async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
     item.taken = True
     session.commit()
     return item
+
+
+@router.get("/steam/{appid}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.edit.SteamData)
+async def get_steam_data(appid: str, current_user: tables.User = fastapi.Depends(deps.dep_user)):
+    data = requests.get(f"https://store.steampowered.com/api/appdetails?appids={appid}&l=english",
+                        headers={"Content-Type": "application/json"})
+    if data.status_code == 200:
+        return models.edit.SteamData(data=json.loads(data.text))
+    raise ResourceNotFound

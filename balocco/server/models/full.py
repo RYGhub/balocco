@@ -67,4 +67,5 @@ class UserFull(read.UserRead):
     issued: typing.List[read.GiveawayRead]
     wins: typing.List[read.ItemRead]
     signups: typing.List[Signup]
+    admin_of: typing.List[read.ServerRead]
 

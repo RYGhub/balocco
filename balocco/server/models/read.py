@@ -49,10 +49,10 @@ class GiveawayRead(edit.GiveawayEdit):
 
 class ItemRead(base.ApiORMModel):
     id: UUID
-    data: typing.Optional[dict]
     obtainable: bool
     winner_id: typing.Optional[UUID]
     giveaway_id: UUID
     taken: bool
     name: str
     giveaway_id: UUID
+    data: typing.Optional[dict]
