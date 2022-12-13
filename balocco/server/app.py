@@ -1,8 +1,11 @@
+import os
 import pathlib
 import fastapi
 import pkg_resources
 import sqlalchemy.exc
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
+from starlette.staticfiles import StaticFiles
 
 from balocco.server.errors import ApiException
 from balocco.server.handlers import handle_api_error, handle_sqlalchemy_not_found, \
@@ -32,6 +35,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/files", StaticFiles(directory="Files"), name="files")
+
+
+@app.get("/")
+async def root():
+    return RedirectResponse(os.environ["FRONTEND_URL"])
+
 
 app.include_router(router_api_user_v1)
 app.include_router(router_api_server_v1)
