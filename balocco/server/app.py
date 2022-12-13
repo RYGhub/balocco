@@ -26,7 +26,7 @@ app = fastapi.FastAPI(
     version="0.1",
 )
 
-origins = ["https://balocco-navi.fermitech.info"]
+origins = [os.getenv("FRONTEND_DOMAIN")]
 if os.getenv("DEBUG"):
     origins.append("http://127.0.0.1:3000")
 app.add_middleware(
