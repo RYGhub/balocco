@@ -29,6 +29,12 @@ class UserEdit(base.ApiORMModel):
         }
 
 
+class Colors(base.ApiModel):
+    foreground: str
+    background: str
+    accent: str
+
+
 class ServerEdit(base.ApiORMModel):
     """
     **Edit** model for :class:`.database.tables.Server`.
@@ -37,7 +43,9 @@ class ServerEdit(base.ApiORMModel):
     name: str
     motd: str
     logo_uri: t.Optional[str]
-    custom_colors: t.Optional[str]
+    custom_colors: t.Optional[Colors]
+
+
 
 
 class GiveawayEdit(base.ApiORMModel):

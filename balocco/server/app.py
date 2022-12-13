@@ -27,7 +27,8 @@ app = fastapi.FastAPI(
 )
 
 origins = ["https://balocco-navi.fermitech.info"]
-
+if os.getenv("DEBUG"):
+    origins.append("http://127.0.0.1:3000")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
