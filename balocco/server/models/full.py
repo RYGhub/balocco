@@ -47,6 +47,9 @@ class ItemFull(read.ItemRead):
 
     winner: typing.Optional[read.UserRead]
     giveaway: typing.Optional[read.GiveawayRead]
+
+
+class ItemObtain(ItemFull):
     obtain_action: str
 
 

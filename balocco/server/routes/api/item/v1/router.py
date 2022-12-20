@@ -50,7 +50,7 @@ async def edit_item(item_new: models.edit.ItemEdit,
         raise ResourceNotFound
 
 
-@router.patch("/take/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
+@router.patch("/take/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemObtain)
 async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
                     item: tables.Item = fastapi.Depends(deps.dep_item),
                     session: Session = fastapi.Depends(deps.dep_session)
