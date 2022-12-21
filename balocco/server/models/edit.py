@@ -71,3 +71,7 @@ class ItemEdit(base.ApiORMModel):
 
 class SteamData(base.ApiModel):
     data: typing.Optional[dict]
+
+
+class Exchange(base.ApiModel):
+    user_id: UUID

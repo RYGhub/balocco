@@ -60,6 +60,20 @@ async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
     return item
 
 
+@router.patch("/send/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
+async def send_item(exchange: models.edit.Exchange,
+                    current_user: tables.User = fastapi.Depends(deps.dep_user),
+                    item: tables.Item = fastapi.Depends(deps.dep_item),
+                    session: Session = fastapi.Depends(deps.dep_session)
+                    ):
+    if item.taken:
+        raise ResourceNotFound
+    new_winner = crud.quick_retrieve(session, tables.User, id=exchange.user_id)
+    item.winner_id = new_winner.id
+    session.commit()
+    return item
+
+
 @router.get("/steam/{appid}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.edit.SteamData)
 async def get_steam_data(appid: str, current_user: tables.User = fastapi.Depends(deps.dep_user)):
     data = requests.get(f"https://store.steampowered.com/api/appdetails?appids={appid}&l=english",
