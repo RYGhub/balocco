@@ -11,7 +11,8 @@ import fastapi
 __all__ = (
     "dep_items",
     "dep_items_giveaway",
-    "dep_item"
+    "dep_item",
+    "dep_item_weaker"
 )
 
 
@@ -28,4 +29,10 @@ def dep_item(item_id: UUID, session: engine.Session = fastapi.Depends(dep_sessio
     item = crud.quick_retrieve(session, tables.Item, id=item_id)
     if not current_user.admin_of and item not in current_user.wins:
         raise ResourceNotFound
+    return item
+
+
+def dep_item_weaker(item_id: UUID, session: engine.Session = fastapi.Depends(dep_session),
+                    current_user=fastapi.Depends(dep_user)):
+    item = crud.quick_retrieve(session, tables.Item, id=item_id)
     return item

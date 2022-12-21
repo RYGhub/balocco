@@ -23,7 +23,7 @@ router = fastapi.routing.APIRouter(
 
 @router.get("/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
 async def get_item(
-        item: tables.Giveaway = fastapi.Depends(deps.dep_item),
+        item: tables.Giveaway = fastapi.Depends(deps.dep_item_weaker),
         current_user: tables.User = fastapi.Depends(deps.dep_user)):
     return item
 
