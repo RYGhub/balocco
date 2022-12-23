@@ -35,8 +35,12 @@ def create_item(item: models.edit.ItemEdit,
                       session: Session = fastapi.Depends(deps.dep_session)
                       ):
     # Add data retrieval from steam to populate the data json column.
-    return crud.quick_create(session, tables.Item(name=item.name, giveaway_id=item.giveaway_id,
+    item: tables.Item = crud.quick_create(session, tables.Item(name=item.name, giveaway_id=item.giveaway_id,
                                                   obtain_action=item.obtain_action, data=item.data))
+    item.set_value_to_itad_lowest()
+    session.commit()
+    return item
+
 
 
 @router.patch("/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
@@ -46,9 +50,13 @@ def edit_item(item_new: models.edit.ItemEdit,
                     session: Session = fastapi.Depends(deps.dep_session)
                     ):
     try:
-        return crud.quick_update(session, item, item_new)
+        item = crud.quick_update(session, item, item_new)
     except sqlalchemy.exc.IntegrityError:
         raise ResourceNotFound
+    else:
+        item.set_value_to_itad_lowest()
+        session.commit()
+        return item
 
 
 @router.patch("/take/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemObtain)
