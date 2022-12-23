@@ -1,7 +1,7 @@
 import uuid
 
 import sqlalchemy.orm
-from sqlalchemy import Column, String, LargeBinary, ForeignKey, JSON, DateTime, Boolean
+from sqlalchemy import Column, String, LargeBinary, ForeignKey, JSON, DateTime, Boolean, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -65,6 +65,13 @@ class Item(Base):
     obtainable = Column(Boolean, nullable=False, default=True)
     obtain_action = Column(String, nullable=False)
     taken = Column(Boolean, nullable=False, default=False)
+
+    value = Column(Integer, nullable=False, default=0, server_default="0")
+    """
+    The weight of the item, considered during the distribution of items in the giveaway.
+
+    To ignore values and distribute items evenly, ensure the values of the distributed items are all equal.
+    """
 
     winner_id = Column(UUID(as_uuid=True), ForeignKey("user.id"))
     winner = relationship("User", back_populates="wins")
