@@ -84,7 +84,7 @@ class Item(Base):
         """
         Set the :attr:`.value` of the item to the lowest price it has ever been from the `IsThereAnyDeal API <https://itad.docs.apiary.io/>`_.
 
-        Expects :attr:`.data` to contain the appid of the item at the ``steam_appid`` key; if missing, sets the value to 0.
+        Expects :attr:`.data` to contain the appid of the item at the ``appid`` key; if missing, sets the value to 0.
 
         Expects the item to exist on ITAD; if missing, sets the value to 0.
 
@@ -93,7 +93,7 @@ class Item(Base):
 
         itad_api_key = os.environ["BALOCCO_ITAD_KEY"]
 
-        appid = self.data["steam_appid"]
+        appid = self.data["appid"]
 
         r = requests.get(f"https://api.isthereanydeal.com/v02/game/plain/", params=dict(
             key=itad_api_key,
