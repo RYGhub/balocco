@@ -128,10 +128,13 @@ async def provide_items(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giv
         # Pop the highest-value item
         item: tables.Item = items.pop(0)
         # Pick the lowest-value user
-        user: tables.User = partecipants[0]
+        user: GiveawayPartecipant = partecipants.pop(0)
         # It's a match!
-        item.winner = user
+        user.current_value += item.value
+        item.winner = user.user
         item.obtainable = False
+        # Readd the user to the partecipants
+        partecipants.add(user)
 
     session.commit()
 
