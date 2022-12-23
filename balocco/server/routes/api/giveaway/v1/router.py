@@ -131,6 +131,7 @@ async def provide_items(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giv
         user: GiveawayPartecipant = partecipants.pop(0)
         # It's a match!
         user.current_value += item.value
+        user.seed = random.random()
         item.winner = user.user
         item.obtainable = False
         # Readd the user to the partecipants
