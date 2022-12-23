@@ -1,6 +1,8 @@
 import uuid
+import os
 
 import sqlalchemy.orm
+import requests
 from sqlalchemy import Column, String, LargeBinary, ForeignKey, JSON, DateTime, Boolean, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -77,6 +79,50 @@ class Item(Base):
     winner = relationship("User", back_populates="wins")
     giveaway_id = Column(UUID(as_uuid=True), ForeignKey("giveaway.id"), nullable=False)
     giveaway = relationship("Giveaway", back_populates="items")
+
+    def set_value_to_itad_lowest(self) -> float:
+        """
+        Set the :attr:`.value` of the item to the lowest price it has ever been from the `IsThereAnyDeal API <https://itad.docs.apiary.io/>`_.
+
+        Expects :attr:`.data` to contain the appid of the item at the ``steam_appid`` key; if missing, sets the value to 0.
+
+        Expects the item to exist on ITAD; if missing, sets the value to 0.
+
+        :returns: The lowest price of the item, in Euro cents (``249`` for 2.49 €).
+        """
+
+        itad_api_key = os.environ["BALOCCO_ITAD_KEY"]
+
+        appid = self.data["steam_appid"]
+
+        r = requests.get(f"https://api.isthereanydeal.com/v02/game/plain/", params=dict(
+            key=itad_api_key,
+            shop="steam",
+            game_id=f"app/{appid}",
+        ))
+        r.raise_for_status()
+        r = r.json()
+        
+        try:
+            app_plain: str = r["data"]["plain"]
+        except KeyError:
+            return 0
+
+        r = requests.get(f"https://api.isthereanydeal.com/v01/game/lowest/", params=dict(
+            key=itad_api_key,
+            plains=app_plain,
+            region="eu1",
+            country="IT",
+        ))
+        r.raise_for_status()
+        r = r.json()
+
+        try:
+            lowest: float = r["data"][app_plain]["price"]
+        except KeyError:
+            return 0
+        else:
+            return int(lowest * 100)
 
 
 class Server(Base):
