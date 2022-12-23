@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 import sqlalchemy.exc
 from pydantic import typing
@@ -81,3 +82,37 @@ async def get_steam_data(appid: str, current_user: tables.User = fastapi.Depends
     if data.status_code == 200:
         return models.edit.SteamData(data=json.loads(data.text))
     raise ResourceNotFound
+
+
+
+def get_itad_lowest(appid: int) -> float:
+    """
+    Get the lowest price a game has ever been from the `IsThereAnyDeal API <https://itad.docs.apiary.io/>`_.
+
+    Returned price is in cents (``249`` for 2.49 €).
+    """
+
+    itad_api_key = os.environ["BALOCCO_ITAD_KEY"]
+
+    r = requests.get(f"https://api.isthereanydeal.com/v02/game/plain/", params=dict(
+        key=itad_api_key,
+        shop="steam",
+        game_id=f"app/{appid}",
+    ))
+    r.raise_for_status()
+    r = r.json()
+    
+    app_plain: str = r["data"]["plain"]
+
+    r = requests.get(f"https://api.isthereanydeal.com/v01/game/lowest/", params=dict(
+        key=itad_api_key,
+        plains=app_plain,
+        region="eu1",
+        country="IT",
+    ))
+    r.raise_for_status()
+    r = r.json()
+
+    lowest: float = r["data"][app_plain]["price"]
+
+    return int(lowest * 100)
