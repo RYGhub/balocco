@@ -56,3 +56,4 @@ class ItemRead(base.ApiORMModel):
     name: str
     giveaway_id: UUID
     data: typing.Optional[dict]
+    value: int
