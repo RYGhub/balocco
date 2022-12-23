@@ -1,9 +1,7 @@
 import os
 import pathlib
 import fastapi
-import pkg_resources
 import sqlalchemy.exc
-from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
@@ -24,17 +22,6 @@ app = fastapi.FastAPI(
     title="Balocco",
     description=description,
     version="0.1",
-)
-
-origins = [os.getenv("FRONTEND_DOMAIN")]
-if os.getenv("DEBUG"):
-    origins.append("http://127.0.0.1:3000")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 app.mount("/files", StaticFiles(directory="Files"), name="files")
