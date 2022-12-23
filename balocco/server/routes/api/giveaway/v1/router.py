@@ -83,7 +83,7 @@ async def join_giveaway(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giv
 @router.put("/provide/{giveaway_id}", dependencies=[Depends(auth.implicit_scheme)],
             response_model=models.full.GiveawayFull)
 async def provide_items(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giveaway),
-                        current_user: tables.User = fastapi.Depends(deps.dep_user),
+                        current_user: tables.User = fastapi.Depends(deps.dep_admin),
                         session: Session = fastapi.Depends(deps.dep_session)):
     if not giveaway.active:
         raise ResourceNotFound
@@ -101,11 +101,10 @@ async def provide_items(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giv
         if mode == "items":
             items[i].winner_id = subscribed_users[j].id
             items[i].obtainable = False
-            session.commit()
             j += 1
         else:
             items[j].winner_id = subscribed_users[i].id
             items[j].obtainable = False
-            session.commit()
             j += 1
+        session.commit()
     return giveaway
