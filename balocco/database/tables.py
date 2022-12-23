@@ -118,6 +118,7 @@ class Item(Base):
             plains=app_plain,
             region="eu1",
             country="IT",
+            exclude="2game",
         ))
         r.raise_for_status()
         r = r.json()
