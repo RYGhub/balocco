@@ -16,5 +16,5 @@ def dep_server(session: engine.Session = fastapi.Depends(dep_session)):
     except ResourceNotFound:
         server = crud.quick_create(session, tables.Server(name="Unconfigured Balocco Server",
                                                           motd="As an administrator, please configure me.",
-                                                          logo_uri="", custom_colors=json.dumps({})))
+                                                          logo_uri="", custom_colors=None))
     return server
