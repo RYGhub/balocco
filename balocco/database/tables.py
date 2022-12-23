@@ -93,7 +93,11 @@ class Item(Base):
 
         itad_api_key = os.environ["BALOCCO_ITAD_KEY"]
 
-        appid = self.data["appid"]
+        try:
+            appid = self.data["appid"]
+        except KeyError:
+            self.value = 0
+            return
 
         r = requests.get(f"https://api.isthereanydeal.com/v02/game/plain/", params=dict(
             key=itad_api_key,
@@ -106,7 +110,8 @@ class Item(Base):
         try:
             app_plain: str = r["data"]["plain"]
         except KeyError:
-            return 0
+            self.value = 0
+            return
 
         r = requests.get(f"https://api.isthereanydeal.com/v01/game/lowest/", params=dict(
             key=itad_api_key,
@@ -120,9 +125,10 @@ class Item(Base):
         try:
             lowest: float = r["data"][app_plain]["price"]
         except KeyError:
-            return 0
-        else:
-            return int(lowest * 100)
+            self.value = 0
+            return
+
+        self.value = int(lowest * 100)
 
 
 class Server(Base):
