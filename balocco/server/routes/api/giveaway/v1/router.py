@@ -1,7 +1,9 @@
 import datetime
 import random
+import dataclasses
 
 import sqlalchemy.exc
+import sortedcontainers
 from pydantic import typing
 
 from balocco.server import models
@@ -80,31 +82,57 @@ async def join_giveaway(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giv
     return giveaway
 
 
+@dataclasses.dataclass
+class GiveawayPartecipant:
+    """
+    An user currently being tracked in a giveaway.
+    """
+
+    user: tables.User
+    """The :class:`.tables.User` itself."""
+    
+    current_value: int
+    """The total value of the items the user has received so far."""
+
+    seed: float
+    """A random value used to resolve ties."""
+
+
 @router.put("/provide/{giveaway_id}", dependencies=[Depends(auth.implicit_scheme)],
             response_model=models.full.GiveawayFull)
 async def provide_items(giveaway: tables.Giveaway = fastapi.Depends(deps.dep_giveaway),
                         current_user: tables.User = fastapi.Depends(deps.dep_admin),
                         session: Session = fastapi.Depends(deps.dep_session)):
-    if not giveaway.active:
-        raise ResourceNotFound
-    subscribed_users: list[tables.User] = [entry.user for entry in giveaway.signups]
-    random.shuffle(subscribed_users)
-    items: list[tables.Item] = [item for item in giveaway.items if item.obtainable]
-    random.shuffle(items)
-    max_val = len(subscribed_users)
-    mode = "users"
-    if max_val > len(items):
-        mode = "items"
-        max_val = len(items)
-    j = 0
-    for i in range(0, max_val, 1):
-        if mode == "items":
-            items[i].winner_id = subscribed_users[j].id
-            items[i].obtainable = False
-            j += 1
-        else:
-            items[j].winner_id = subscribed_users[i].id
-            items[j].obtainable = False
-            j += 1
-        session.commit()
+
+    items = sortedcontainers.SortedList(
+        [item for item in giveaway.items if item.obtainable], 
+        key=lambda i: -i.value
+    )
+    """:class:`list` of items which can be obtained from the giveaway, always ordered by descending :attr:`.tables.Item.value`."""
+
+    partecipants = sortedcontainers.SortedList(
+        [
+            GiveawayPartecipant(
+                user=entry.user,
+                current_value=0,
+                seed=random.random(),
+            )
+            for entry in giveaway.signups
+        ],
+        key=lambda gp: gp.current_value + gp.seed
+    )
+    """:class:`list` of :class:`.GiveawayPartecipant`s, always sorted by ascending :attr:`.GiveawayPartecipants.current_value` and :attr:`.GiveawayPartecipants.seed`."""
+
+    # Continue until everything has been given away
+    while items:
+        # Pop the highest-value item
+        item: tables.Item = items.pop(0)
+        # Pick the lowest-value user
+        user: tables.User = partecipants[0]
+        # It's a match!
+        item.winner = user
+        item.obtainable = False
+
+    session.commit()
+
     return giveaway
