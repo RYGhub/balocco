@@ -80,7 +80,7 @@ class Item(Base):
     giveaway_id = Column(UUID(as_uuid=True), ForeignKey("giveaway.id"), nullable=False)
     giveaway = relationship("Giveaway", back_populates="items")
 
-    def set_value_to_itad_lowest(self) -> float:
+    def set_value_to_itad_lowest(self) -> None:
         """
         Set the :attr:`.value` of the item to the lowest price it has ever been from the `IsThereAnyDeal API <https://itad.docs.apiary.io/>`_.
 
