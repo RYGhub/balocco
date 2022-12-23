@@ -42,7 +42,7 @@ app.mount("/files", StaticFiles(directory="Files"), name="files")
 
 @app.get("/")
 async def root():
-    return RedirectResponse(os.environ["FRONTEND_URL"])
+    return RedirectResponse(os.environ["FRONTEND_URL"], status_code=303)
 
 
 app.include_router(router_api_user_v1)
