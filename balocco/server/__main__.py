@@ -11,7 +11,7 @@ from balocco.server.app import app
 
 app.add_middleware(
     cors.CORSMiddleware,
-    allow_origins=os.environ["CORS_ALLOW_ORIGINS"].split(" "),
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
