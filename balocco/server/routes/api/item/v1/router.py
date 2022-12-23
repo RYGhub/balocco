@@ -23,14 +23,14 @@ router = fastapi.routing.APIRouter(
 
 
 @router.get("/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
-async def get_item(
+def get_item(
         item: tables.Giveaway = fastapi.Depends(deps.dep_item_weaker),
         current_user: tables.User = fastapi.Depends(deps.dep_user)):
     return item
 
 
 @router.post("/", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
-async def create_item(item: models.edit.ItemEdit,
+def create_item(item: models.edit.ItemEdit,
                       current_user: tables.User = fastapi.Depends(deps.dep_admin),
                       session: Session = fastapi.Depends(deps.dep_session)
                       ):
@@ -40,7 +40,7 @@ async def create_item(item: models.edit.ItemEdit,
 
 
 @router.patch("/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
-async def edit_item(item_new: models.edit.ItemEdit,
+def edit_item(item_new: models.edit.ItemEdit,
                     current_user: tables.User = fastapi.Depends(deps.dep_admin),
                     item: tables.Item = fastapi.Depends(deps.dep_item),
                     session: Session = fastapi.Depends(deps.dep_session)
@@ -52,7 +52,7 @@ async def edit_item(item_new: models.edit.ItemEdit,
 
 
 @router.patch("/take/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemObtain)
-async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
+def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
                     item: tables.Item = fastapi.Depends(deps.dep_item),
                     session: Session = fastapi.Depends(deps.dep_session)
                     ):
@@ -62,7 +62,7 @@ async def take_item(current_user: tables.User = fastapi.Depends(deps.dep_user),
 
 
 @router.patch("/send/{item_id}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.full.ItemFull)
-async def send_item(exchange: models.edit.Exchange,
+def send_item(exchange: models.edit.Exchange,
                     current_user: tables.User = fastapi.Depends(deps.dep_user),
                     item: tables.Item = fastapi.Depends(deps.dep_item),
                     session: Session = fastapi.Depends(deps.dep_session)
@@ -76,7 +76,7 @@ async def send_item(exchange: models.edit.Exchange,
 
 
 @router.get("/steam/{appid}", dependencies=[Depends(auth.implicit_scheme)], response_model=models.edit.SteamData)
-async def get_steam_data(appid: str, current_user: tables.User = fastapi.Depends(deps.dep_user)):
+def get_steam_data(appid: str, current_user: tables.User = fastapi.Depends(deps.dep_user)):
     data = requests.get(f"https://store.steampowered.com/api/appdetails?appids={appid}&l=english",
                         headers={"Content-Type": "application/json"})
     if data.status_code == 200:
