@@ -102,7 +102,10 @@ def get_itad_lowest(appid: int) -> float:
     r.raise_for_status()
     r = r.json()
     
-    app_plain: str = r["data"]["plain"]
+    try:
+        app_plain: str = r["data"]["plain"]
+    except KeyError:
+        return 0
 
     r = requests.get(f"https://api.isthereanydeal.com/v01/game/lowest/", params=dict(
         key=itad_api_key,
@@ -113,6 +116,9 @@ def get_itad_lowest(appid: int) -> float:
     r.raise_for_status()
     r = r.json()
 
-    lowest: float = r["data"][app_plain]["price"]
-
-    return int(lowest * 100)
+    try:
+        lowest: float = r["data"][app_plain]["price"]
+    except KeyError:
+        return 0
+    else:
+        return int(lowest * 100)
