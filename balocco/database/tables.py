@@ -96,7 +96,9 @@ class Item(Base):
         try:
             appid = self.data["appid"]
         except KeyError:
+            print("Error while reading appid!")
             if self.data["price"]:
+                print(f"Steam says price is {self.data['price']}!")
                 self.value = self.data["price"]
             else:
                 self.value = 0
@@ -111,9 +113,11 @@ class Item(Base):
         r = r.json()
 
         try:
+            print(f"Failed to load price for {self.data['appid']}!")
             app_plain: str = r["data"]["plain"]
         except KeyError:
             if self.data["price"]:
+                print(f"Steam says price is {self.data['price']} for {self.data['appid']}!")
                 self.value = self.data["price"]
             else:
                 self.value = 0
@@ -132,7 +136,9 @@ class Item(Base):
         try:
             lowest: float = r["data"][app_plain]["price"]
         except KeyError:
+            print(f"Failed to load price for {self.data['appid']}!")
             if self.data["price"]:
+                print(f"Steam says price is {self.data['price']} for {self.data['appid']}!")
                 self.value = self.data["price"]
             else:
                 self.value = 0
