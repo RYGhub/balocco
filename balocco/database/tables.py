@@ -96,7 +96,10 @@ class Item(Base):
         try:
             appid = self.data["appid"]
         except KeyError:
-            self.value = 0
+            if self.data["price"]:
+                self.value = self.data["price"]
+            else:
+                self.value = 0
             return
 
         r = requests.get(f"https://api.isthereanydeal.com/v02/game/plain/", params=dict(
@@ -106,11 +109,14 @@ class Item(Base):
         ))
         r.raise_for_status()
         r = r.json()
-        
+
         try:
             app_plain: str = r["data"]["plain"]
         except KeyError:
-            self.value = 0
+            if self.data["price"]:
+                self.value = self.data["price"]
+            else:
+                self.value = 0
             return
 
         r = requests.get(f"https://api.isthereanydeal.com/v01/game/lowest/", params=dict(
@@ -126,7 +132,10 @@ class Item(Base):
         try:
             lowest: float = r["data"][app_plain]["price"]
         except KeyError:
-            self.value = 0
+            if self.data["price"]:
+                self.value = self.data["price"]
+            else:
+                self.value = 0
             return
 
         self.value = int(lowest * 100)
