@@ -113,9 +113,10 @@ class Item(Base):
         r = r.json()
 
         try:
-            print(f"Failed to load price for {self.data['appid']}!")
+
             app_plain: str = r["data"]["plain"]
         except KeyError:
+            print(f"Failed to load price for {self.data['appid']}!")
             if self.data["price"]:
                 print(f"Steam says price is {self.data['price']} for {self.data['appid']}!")
                 self.value = self.data["price"]
