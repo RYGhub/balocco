@@ -37,7 +37,13 @@ def create_item(item: models.edit.ItemEdit,
     # Add data retrieval from steam to populate the data json column.
     item: tables.Item = crud.quick_create(session, tables.Item(name=item.name, giveaway_id=item.giveaway_id,
                                                   obtain_action=item.obtain_action, data=item.data))
-    item.set_value_to_itad_lowest()
+    try:
+        item.set_value_to_itad_lowest()
+    except Exception:
+        if item.data["price"]:
+            item.value=item.data["price"]
+        else:
+            item.value = 0
     session.commit()
     return item
 
